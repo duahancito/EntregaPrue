@@ -1,0 +1,116 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block contenido %}
+<!-- Pricing Plan Start -->
+<div class="container-fluid bg-offer my-5 py-5">
+    <div class="container">
+        <div class="border-start border-5 border-primary ps-5 mb-5">
+            <h6 class="text-primary text-uppercase">Precios De Los Plan</h6>
+            <h1 class="text-white display-5 text-uppercase mb-0">
+                Eliga El Plan Mas Adecuado Para Usted y su mascota
+            </h1>
+        </div>
+        <div class="row g-5 justify-content-center">
+            <div class="col-lg-4">
+                <div class="bg-light text-center pt-5">
+                    <h2 class="text-uppercase">Plan premium</h2>
+                    <h6 class="text-body mb-5">La Mejor Decision</h6>
+                    <div class="text-center bg-dark p-4 mb-2">
+                        <h1 class="display-4 text-white mb-0">
+                            <small class="align-top" style="font-size: 22px; line-height: 45px">$</small>20 USD<small
+                                class="align-bottom" style="font-size: 16px; line-height: 40px">/ Mes</small>
+                        </h1>
+                    </div>
+                    <div class="text-center p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span>Consultas veterinarias ilimitadas</span>
+                            <i class="bi bi-check2 fs-4 text-primary"></i>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span>Control de peso</span>
+                            <i class="bi bi-check2 fs-4 text-primary"></i>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span>Descuentos en servicios adicionales</span>
+                            <i class="bi bi-check2 fs-4 text-primary"></i>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span>Descuentos en mas Productos</span>
+                            <i class="bi bi-check2 fs-4 text-primary"></i>
+                        </div>
+                        <div id="btnPaypal"> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pricing Plan End -->
+{% endblock %}
+
+{% block js %}
+<script src="http://www.paypalobjects.com/api/checkout.js"></script>
+
+<script>
+    paypal.Button.render({
+        env: 'sandbox',
+        client: {
+            sandbox: 'AWwHQIrQ_zivOEIdruv1N0yBRDeNvd6ZK3IlJx9DHcyjzGjBWL0BHqVSYzJAxwqgqeLdvL-emhnqyhS1',
+            production: 'demo_production_client_id',
+        },
+        locale: 'es_CL',
+        style: {
+            size: 'small', // small, medium, large
+            color: 'gold', //gold, black
+            shape: 'rect' // pill, rect
+        },
+        commit: true,
+        payment: function (data, actions) {
+            return actions.payment.create({
+                transactions: [{
+                    amount: {
+                        total: '{{valor}}', // MONTO A PAGAR
+                        currency: 'USD' // USD, CN,
+                    }
+                }]
+            });
+        },
+        onAuthorize: function (data, actions) {
+            return actions.payment.execute().then(function () {
+                Swal.fire({
+                    title: 'Confirmación',
+                    text: 'Pago realizado!',
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar'
+                })
+            });
+        },
+        onCancel(data) {
+            Swal.fire({
+                title: 'Pago cancelado',
+                text: 'Pago no realizado!',
+                icon: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+            })
+        },
+        onError(err) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error de transaccion!',
+                icon: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+            })
+        }
+    }, '#btnPaypal');
+</script>
+
+{% endblock %}

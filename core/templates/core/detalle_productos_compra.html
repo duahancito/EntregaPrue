@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block css %}
+<style>
+  .detalle-compra {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .detalle-compra h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .detalle-compra ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .detalle-compra li {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+
+  .detalle-compra li:last-child {
+    border-bottom: none;
+  }
+
+  .detalle-compra p {
+    text-align: center;
+    color: #777;
+  }
+
+  .detalle-compra .boton-volver {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .detalle-compra .boton-volver a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .detalle-compra .boton-volver a:hover {
+    background-color: #0056b3;
+  }
+</style>
+{% endblock %}
+
+{% block contenido %}
+  <div class="detalle-compra">
+    <h1>Detalle de Productos - Compra {{ compra.id }}</h1>
+    {% if productos_compra %}
+      <ul>
+        {% for producto_compra in productos_compra %}
+         {% if producto_compra.producto.imagen %}
+           <img src="{{ producto_compra.producto.imagen.url }}" alt="" height="80px" width="60px">
+           {% else %}
+           <img src="{% static 'core/img/about.jpg' %}" alt="" height="80px" width="60px">
+          {% endif %}
+          <li>{{ producto_compra.producto.nombre }} - Cantidad: {{ producto_compra.cantidad }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No hay productos en esta compra.</p>
+    {% endif %}
+    
+    <div class="btn">
+      <a class="btn btn-success" href="{% url 'rastreo'%}">Segimiento</a>
+      
+    </div>
+  </div>
+  
+{% endblock %}

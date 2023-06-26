@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block css %}
+<link href="{% static 'core/css/style2.css' %}" rel="stylesheet">
+{% endblock %}
+
+
+{% block contenido %}
+
+
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                     {% for x in items %} 
+
+                        <tr>
+                            <td>
+                                <div class="media">
+                                    <div class="d-flex">
+                                       {% if x.producto.imagen %}
+                                          <img src="{{ x.producto.imagen.url }}" alt="" height="80px" width="60px">
+                                       {% else %}
+                                        <img src="{% static 'core/img/about.jpg' %}" alt="" height="80px" width="60px">
+                                       {% endif %}
+                                    </div>
+                                    <div class="media-body">
+                                        <p>{{ x.producto.nombre }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <h5>${{ x.producto.precio | intcomma}}</h5>
+                            </td>
+                            <td>
+                                <h5><a href="" style="text-decoration: none;"><i class="ti-angle-up"></i></a>
+                                    {{ x.cantidad }}
+                                    <a href="" style="text-decoration: none;"><i class="ti-angle-down"></i></a>
+                                </h5>
+                            </td>
+                            <td>
+                                <h5>{{ x.producto.stock }}</h5>
+                            </td>
+                            <td>
+                                <h5>{{ x.producto.tipo }}</h5>
+                            </td>   
+                            <td>
+                            <a onclick="deleteCarrito({{ x.id }})" class="btn btn-primary py-2 px-3"><span><i class="bi bi-trash"></i></span></a>   
+                         </tr>
+                        {% endfor %}
+                        <tr>
+                            </td>
+                            <td>
+                                <h5>Total </h5>
+                            </td>
+                            <td>
+                                <h5>${{total | intcomma}}</h5>
+                                
+                            </td>
+                        </tr>
+                        <tr class="btn-pago">
+                            <td>
+                                <a class="btn btn-info" href="{% url 'pagocarro' %}">Seguir Comprando</a>
+                                <a>
+                                    <div id="btnPaypal"> </div>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
