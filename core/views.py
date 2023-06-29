@@ -39,8 +39,16 @@ class ProductoViewset(viewsets.ModelViewSet):
 
 class TipoProductoViewset(viewsets.ModelViewSet):
     queryset = TipoProducto.objects.all()
-    #queryset = Producto.objects.filter(tipo=1)
     serializer_class = TipoProductoSerializers
+
+class CompraViewset(viewsets.ModelViewSet):
+    queryset = Compra.objects.all()
+
+    serializer_class = CompraSerializers
+
+class ProductoCompraViewset(viewsets.ModelViewSet):
+    queryset = ProductoCompra.objects.all()
+    serializer_class = ProductoCompraSerializers
 
 def indexapi(request):
     #OBTIENE EL JSON DEL API/LOS DATOS DEL API
@@ -95,7 +103,7 @@ def product(request):
     return render(request, 'core/product.html', data)
 
 # CRUD
-@grupo_requerido('vendedor')
+@grupo_requerido('Vendedor')
 @login_required
 def add(request):
     data = {
@@ -111,7 +119,7 @@ def add(request):
 
     return render(request, 'core/add-product.html', data)
 
-@grupo_requerido('vendedor')
+@grupo_requerido('Vendedor')
 @login_required
 def update(request, id):
     producto = Producto.objects.get(id=id) # OBTIENE UN PRODUCTO POR EL ID
@@ -129,7 +137,7 @@ def update(request, id):
 
     return render(request, 'core/update-product.html', data)
 
-@grupo_requerido('vendedor')
+@grupo_requerido('Vendedor')
 @login_required
 def delete(request, id):
     producto = Producto.objects.get(id=id) # OBTIENE UN PRODUCTO POR EL ID
@@ -248,7 +256,15 @@ def rastreo(request):
     carrito = Carrito.objects.get(usuario=request.user)
     items = ItemCarrito.objects.filter(carrito=carrito)
     total = sum(item.subtotal() for item in items)
-    return render(request, 'core/rastreo.html', {'carrito': carrito, 'items': items, 'total': total})
+    compra = Compra.objects.get(id=carrito.compra_id)  # Obtener la compra asociada al carrito
+
+    data = {
+        'carrito': carrito,
+        'items': items,
+        'total': total,
+        'compra': compra,  # Agregar la compra al contexto
+    }
+    return render(request, 'core/rastreo.html', data)
 
 #PagoCarro
 @grupo_requerido('cliente')
@@ -296,7 +312,7 @@ def registro(request):
 @grupo_requerido('cliente')
 def agregar_compra(request):
     carrito = Carrito.objects.get(usuario=request.user)
-    compra = Compra(usuario=request.user, total=carrito.total)
+    compra = Compra(usuario=request.user, total=carrito.total, estado='Validacion' )
     compra.save()
     items = ItemCarrito.objects.filter(carrito=carrito)
 
@@ -314,12 +330,60 @@ def agregar_compra(request):
     return redirect('lista_compras')
 
 @grupo_requerido('cliente')
+@grupo_requerido('cliente')
 def lista_compras(request):
-    compras = Compra.objects.filter(usuario=request.user)
-    return render(request, 'core/lista_compras.html', {'compras': compras})
+    compras = Compra.objects.filter(usuario=request.user)# SELECT * FROM producto
+    page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
+
+    try:
+        paginator = Paginator(compras, 4)
+        compras = paginator.page(page)
+    except:
+        raise Http404
+
+    data ={
+        'compras' :compras,
+        'paginator': paginator,
+    }
+
+    return render(request, 'core/lista_compras.html',data)
 
 @grupo_requerido('cliente')
 def detalle_productos_compra(request, compra_id):
     compra = get_object_or_404(Compra, id=compra_id)
     productos_compra = compra.productocompra_set.all()
     return render(request, 'core/detalle_productos_compra.html', {'compra': compra, 'productos_compra': productos_compra})
+
+@grupo_requerido('Vendedor')
+def estado_compra(request, id):
+    compra = Compra.objects.get(id=id)
+
+    if request.method == 'POST':
+        nuevo_estado = request.POST.get('nuevo_estado')
+        compra.estado = nuevo_estado
+        compra.save()
+        messages.info(request, "El estado a sido modificado")
+
+    data ={
+        'compra' :compra,
+    }
+    return render(request, 'core/estado_compra.html', data)    
+
+
+@grupo_requerido('Vendedor')
+@grupo_requerido('Vendedor')
+def compras(request):
+    compras = Compra.objects.all() # SELECT * FROM producto
+    page = request.GET.get('page', 1) # OBTENEMOS LA VARIABLE DE LA URL, SI NO EXISTE NADA DEVUELVE 1
+    try:
+        paginator = Paginator(compras, 3)
+        compras = paginator.page(page)
+    except:
+        raise Http404
+
+    data ={
+        'compras' :compras,
+        'paginator': paginator,
+    }
+    return render(request, 'core/Compras.html', data)  
+

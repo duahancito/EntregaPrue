@@ -7,6 +7,8 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register('productos', ProductoViewset)
 router.register('tipoproductos', TipoProductoViewset)
+router.register('compra', CompraViewset)
+router.register('productoCompra', ProductoCompraViewset)
 
 
 urlpatterns = [
@@ -44,4 +46,7 @@ urlpatterns = [
     path('lista_compras/', lista_compras, name='lista_compras'),
     #path('detalle_compra/<compra_id>/', detalle_compra, name='detalle_compra'),
     path('detalle_productos_compra/<compra_id>/productos/', detalle_productos_compra, name='detalle_productos_compra'),
+    path('compras/', compras, name='compras'),
+    path('estado_compra/<id>', estado_compra, name='estado_compra'),
+
 ]

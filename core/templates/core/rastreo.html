@@ -51,9 +51,11 @@
                 <div class="product">
                     <div class="pb-5">
                         {% for xx in items %}
-                            <div class="d-flex">
-                                <img src="{{ xx.producto.imagen.url }}" alt="" height="100px" width="80px">
-                            </div>
+                         {% if xx.producto.imagen %}
+                            <img src="{{ xx.detalle_productos_compra.producto.imagen.url }}" alt="" height="80px" width="60px">
+                        {% else %}
+                           <img src="{% static 'core/img/about.jpg' %}" alt="" height="80px" width="60px">
+                         {% endif %}
                             <span> {{ xx.producto.nombre }}  </span>
                         {% endfor %}
                     </div>

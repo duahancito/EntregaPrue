@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 # Create your models here.
 
 # ES DONDE CREAN LAS TABLAS
@@ -42,9 +43,19 @@ class ItemCarrito(models.Model):
 
 #compras
 class Compra(models.Model):
+    ESTADOS =(
+        ('Validacion','Validacion'),
+        ('Preparacion','Preparacion'),
+        ('Reparto','Reparto'),
+        ('Entregado','Entregado'),
+    )
     usuario = models.ForeignKey(User, on_delete=models.CASCADE,default=1)
     fecha_compra = models.DateTimeField(auto_now_add=True)
     total = models.PositiveIntegerField(default=0)
+    estado = models.CharField(max_length=20, choices=ESTADOS,default='validacion')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Compra {self.id}"

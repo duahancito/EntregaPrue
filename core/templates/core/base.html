@@ -45,7 +45,11 @@
                 <div class="d-inline-flex align-items-center">
                     <i class="bi bi-person-square fs-1 text-primary me-3"></i>
                     <div class="text-start">
+                       {% if user.is_authenticated %}
+                        <h6 class="text-uppercase mb-1">{{user.username}}</h6>
+                        {% else %}
                         <h6 class="text-uppercase mb-1">Cliente</h6>
+                        {% endif %}
                         {% if user.is_authenticated %}
                         <span>Bienvenido: {{user.username}}</span>
 
@@ -95,10 +99,11 @@
                 {% endif %}
 
                 <a href="{% url 'index'%}" class="nav-item nav-link ">Inicio</a>
-                {% if user.username == "admin" %}
-                 <a href="{% url 'add'%}" class="nav-item nav-link">Agregar</a>
-                {% else %}
-                {% endif%}
+                {% for group in user.groups.all %}
+                {% if group.name == 'Vendedor' %}
+                    <a href="{% url 'add' %}" class="nav-item nav-link">Agregar</a>
+                {% endif %}
+                {% endfor %}
                 <a href="{% url 'about'%}" class="nav-item nav-link">Acera De</a>
                 <a href="{% url 'service'%}" class="nav-item nav-link">Servicios</a>
                 <a href="{% url 'product'%}" class="nav-item nav-link">Productos</a>
@@ -109,7 +114,11 @@
                         <a href="{% url 'team'%}" class="dropdown-item">Equipo</a>
                         <a href="{% url 'carrito'%}" class="dropdown-item">Carro</a>
                         <a href="{% url 'lista_compras'%}" class="dropdown-item">Compras</a>
-                        <a href="{% url 'detail'%}" class="dropdown-item">Blog Detail</a>
+                        {% for group in user.groups.all %}
+                        {% if group.name == 'Vendedor' %}
+                        <a href="{% url 'compras' %}" class="dropdown-item">Estado</a>
+                         {% endif %}
+                    {% endfor %}
                     </div>
                 </div>
                 <a href="{% url 'contact' %}" class="nav-item nav-link nav-contact bg-primary text-white px-5 ms-lg-5">Contactos

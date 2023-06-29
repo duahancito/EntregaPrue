@@ -205,37 +205,43 @@
 <!-- Products Start -->
 <div class="container">
   <div class="row gx-5 justify-content-start">
-    {% for aux in listado %} {% if aux.vigente == 1 %}
-    <div class="col-md-6 col-lg-3">
-      <div class="product">
-        <div class="pb-5">
-          <div class="product-item position-relative bg-light d-flex flex-column text-center">
-            {% if aux.imagen %}
-            <img class="img-fluid mb-4" src="{{ aux.imagen.url }}" alt="Imagen no encontrada if" />
-            {% else %}
-            <img class="img-fluid mb-4" src="{% static 'core/img/about.jpg' %}" alt="Imagen no encontrada else" />
-            {% endif %}
-            <h6 class="text-uppercase">{{ aux.nombre }}</h6>
-            <h5 class="text-primary mb-0">${{ aux.precio | intcomma}}</h5>
-            <h5 class="text-primary mb-0">Stock:{{ aux.stock }}</h5>
-            <div class="btn-action d-flex justify-content-center">
-              {% if user.is_authenticated %}
-                {% if user.username == "admin" %}
-                <a class="btn btn-primary py-2 px-3" href="{% url 'agregar_producto' aux.id %}"><i class="bi bi-cart"></i></a>
-				        <a class="btn btn-primary py-2 px-3" href="{% url 'update' aux.id %}"><i class="bi bi-eye"></i></a>
-                <a onclick="deleteProducto({{ aux.id }})" class="btn btn-primary py-2 px-3"><span><i class="bi bi-trash"></i></span></a>
-                  {% else %}
-                  <a class="btn btn-primary py-2 px-3" href="{% url 'agregar_producto' aux.id %}"><i class="bi bi-cart"></i></a>
+    {% for aux in listado %}
+      {% if aux.vigente == 1 %}
+        <div class="col-md-6 col-lg-3">
+          <div class="product">
+            <div class="pb-5">
+              <div class="product-item position-relative bg-light d-flex flex-column text-center">
+                {% if aux.imagen %}
+                  <img class="img-fluid mb-4" src="{{ aux.imagen.url }}" alt="Imagen no encontrada if" />
+                {% else %}
+                  <img class="img-fluid mb-4" src="{% static 'core/img/about.jpg' %}" alt="Imagen no encontrada else" />
                 {% endif %}
-               {% else %}
-				       <a class="btn btn-primary py-2 px-3" href="{% url 'login'%}"><i class="bi bi-cart"></i></a>
-              {% endif %}
+                <h6 class="text-uppercase">{{ aux.nombre }}</h6>
+                <h5 class="text-primary mb-0">${{ aux.precio | intcomma }}</h5>
+                <h5 class="text-primary mb-0">Stock: {{ aux.stock }}</h5>
+                <div class="btn-action d-flex justify-content-center">
+                  {% if user.is_authenticated %}
+                    {% if user.username == "admin" %}
+                      {% if aux.stock > 0 %}
+                        <a class="btn btn-primary py-2 px-3" href="{% url 'agregar_producto' aux.id %}"><i class="bi bi-cart"></i></a>
+                      {% endif %}
+                      <a class="btn btn-primary py-2 px-3" href="{% url 'update' aux.id %}"><i class="bi bi-eye"></i></a>
+                      <a onclick="deleteProducto({{ aux.id }})" class="btn btn-primary py-2 px-3"><span><i class="bi bi-trash"></i></span></a>
+                    {% else %}
+                      {% if aux.stock > 0 %}
+                        <a class="btn btn-primary py-2 px-3" href="{% url 'agregar_producto' aux.id %}"><i class="bi bi-cart"></i></a>
+                      {% endif %}
+                    {% endif %}
+                  {% else %}
+                    <a class="btn btn-primary py-2 px-3" href="{% url 'login' %}"><i class="bi bi-cart"></i></a>
+                  {% endif %}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    {% endif %} {% endfor %}
+      {% endif %}
+    {% endfor %}
   </div>
   {% include 'core/paginator.html' %}
 </div>

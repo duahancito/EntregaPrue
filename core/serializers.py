@@ -15,3 +15,13 @@ class ProductoSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CompraSerializers(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Compra
+        fields = '__all__'
+
+class ProductoCompraSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ProductoCompra
+        fields = '__all__'

@@ -22,3 +22,8 @@ class ProductoForm(ModelForm):
         } 
 class CustomUserCreationform(UserCreationForm):
     pass
+
+class EstadoFrom(ModelForm):
+    class Meta:
+        model = Compra
+        fields =['estado']

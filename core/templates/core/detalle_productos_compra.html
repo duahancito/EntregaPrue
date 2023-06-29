@@ -70,6 +70,7 @@
            <img src="{% static 'core/img/about.jpg' %}" alt="" height="80px" width="60px">
           {% endif %}
           <li>{{ producto_compra.producto.nombre }} - Cantidad: {{ producto_compra.cantidad }}</li>
+          <h3> Estado:{{ producto_compra.compra.estado }}</h3>
         {% endfor %}
       </ul>
     {% else %}
@@ -77,7 +78,7 @@
     {% endif %}
     
     <div class="btn">
-      <a class="btn btn-success" href="{% url 'rastreo'%}">Segimiento</a>
+      <a class="btn btn-success" href="{% url 'lista_compras'%}">Atras</a>
       
     </div>
   </div>
